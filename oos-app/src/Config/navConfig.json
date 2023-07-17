@@ -1,0 +1,14 @@
+{
+   "items": [
+    {"to": "/Products", "label":"Products", "users" : ["unauthorized","admin","authorized"]},
+    {"to": "/Stock", "label":"Stock", "users" : ["admin"]},
+    {"to": "/ShopingCard", "label":"ShopingCard", "users" : ["authorized"]},
+    {"to": "/MyOrders", "label":"MyOrders", "users" : ["authorized"]},
+    {"to": "/Users", "label":"Users", "users" : ["admin"]},
+    {"to": "/Orders", "label":"Orders", "users" : ["admin"]},
+    {"to": "/SignIn", "label":"SignIn", "users" : ["unauthorized"]},
+    {"to": "/SignOut", "label":"SignOut", "users" : ["admin","authorized"]}
+    
+    ]
+    
+}

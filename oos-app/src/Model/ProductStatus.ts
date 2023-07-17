@@ -1,0 +1,1 @@
+export type ProductStatus = 'onSale'|'inStock'|'ordered'

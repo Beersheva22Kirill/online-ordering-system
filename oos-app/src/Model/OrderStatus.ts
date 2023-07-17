@@ -1,0 +1,1 @@
+ export type OrderStatus = 'Processing'|'Delivery'|'Closed'
