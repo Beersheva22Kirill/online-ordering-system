@@ -37,9 +37,6 @@ export class OrderServiceFire implements OrderService {
         return doc(this.orderCollection,id)
     }
 
- 
-
-
     async addOrder(order: Order): Promise<string|null> {   
         const idOrder:string = await this.getId();        
         const docRef = this.getDocReference(idOrder);
