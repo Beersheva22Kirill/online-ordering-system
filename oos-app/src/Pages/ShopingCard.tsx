@@ -49,9 +49,10 @@ const ShopingCard:React.FC = () => {
 
     },[])
 
-    function deleteProductFromCard(id:any){
-        console.log(currentUser.uid, id);
-        
+    async function deleteProductFromCard(id:any,count:number){
+        const productInStock:Product = await stockService.getProductById(id) 
+        productInStock.count += count 
+        await stockService.updateProduct(productInStock,productInStock.id)     
         shopingCardService.delFromCard(currentUser.uid,id)
     }
 
@@ -80,6 +81,8 @@ const ShopingCard:React.FC = () => {
         } catch (error) {
             console.log(error);
             
+        } finally {
+            setActiveModal(false)
         }
         
     }

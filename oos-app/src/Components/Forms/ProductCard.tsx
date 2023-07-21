@@ -4,22 +4,26 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import storeConfig from "../../Config/StoreConfig.json"
 import { Product } from "../../Model/Product";
 import { ProductStatus } from "../../Model/ProductStatus";
+import { Category } from "../../Model/Category";
 
 type Props = {
     callBackSubmit: (product:Product,id?:any) => void
     callBackUploadImg:(file:File) => Promise<string>;
+    callBackGetCategory:(id:any) => Promise<Category>
     modalClose?:(active: boolean) => void,
     product?:Product; 
+    categoryes:Category[]
     
 }
 
 const ProductCard:React.FC<Props> = (props) => {
     const linkImage = props.product && props.product.imagePath ? props.product.imagePath : null
-    const [category, setCategory] = useState(props.product ? props.product.category : '');  
+    const [category, setCategory] = useState<Category>(props.product ? props.product.category : {name:''});  
     const [statusPr, setStatusPr] = useState<ProductStatus>(props.product ? props.product.status : 'inStock');
       
-    const handleChange = (event: SelectChangeEvent) => {
-        setCategory(event.target.value as string);
+    const handleChange = async (event: SelectChangeEvent) => {
+        const category:Category = await props.callBackGetCategory(event.target.value) as Category
+        setCategory(category);
     };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -77,9 +81,9 @@ const ProductCard:React.FC<Props> = (props) => {
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     label="Category"
-                                    defaultValue={props.product ? props.product.category : ""}
+                                    defaultValue={props.product ? props.product.category.id : ''}
                                     onChange={handleChange} required>
-                                    {storeConfig.categoryes.map((item:string) => <MenuItem value={item}>{item}</MenuItem>)}
+                                    {props.categoryes.map((item:Category) => <MenuItem value={item.id}>{item.name}</MenuItem>)}
                             </Select>
                     </FormControl>
                     
@@ -117,7 +121,7 @@ const ProductCard:React.FC<Props> = (props) => {
                     
                 </Box>
                 <Box mt = {1} sx = {{display:'flex', flexDirection: "column", alignItems: "center"}}>
-                    <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
+                    <FormLabel id="demo-radio-buttons-group-label">Status</FormLabel>
                         <RadioGroup sx={{display:'flex', flexDirection: smallDisplay ? 'column' : 'row'}}
                                     aria-labelledby="demo-radio-buttons-group-label"
                                     defaultValue={props.product ? props.product.status: 'inStock'}

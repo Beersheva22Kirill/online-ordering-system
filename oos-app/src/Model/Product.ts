@@ -1,11 +1,12 @@
+import { Category } from "./Category";
 import { ProductStatus } from "./ProductStatus";
 
  export type Product = {
     id?:any;
-    category:string;
+    category:Category;
     name:string,
     price:number,
-    count?:number,
+    count:number,
     imagePath?:string,
     status:ProductStatus
 }

@@ -54,16 +54,25 @@ export class OrderServiceFire implements OrderService {
            
     }
 
-    changeStatus(order: Order, status:OrderStatus): Promise<void> {
-        throw new Error("Method not implemented.");
+    async changeStatus(order: Order, status:OrderStatus): Promise<void> {
+        const docRef = this.getDocReference(order.id);
+        try {
+            await setDoc(docRef,{...order,status:status,date:getISODateStr(order.date)} )
+        } catch (error) {
+            
+        }
+
     }
 
     closeOrder(order: Order): Promise<void> {
         throw new Error("Method not implemented.");
     }
 
-    getOrdersByUser(uid:any): Observable<string | Order[]> {
-        const queryUidOrders = query(this.orderCollection, where("uid", "==", uid));
+    getOrdersByUser(uid:any,status:OrderStatus|'all'): Observable<string | Order[]> {
+        let queryUidOrders = query(this.orderCollection, where("uid", "==", uid));
+        if (status !== 'all') {
+            queryUidOrders = query(this.orderCollection, where("uid", "==", uid), where("status", "==", status));
+        }
         return collectionData(queryUidOrders).pipe(catchError(error => {
             const firestoreError: FirestoreError = error;
             const errorMessage = getErrorMessage(firestoreError);
@@ -71,8 +80,13 @@ export class OrderServiceFire implements OrderService {
         })) as Observable<string|Order[]>
     }
 
-    getOrders(): Observable<string | Order[]> {
-        return collectionData(this.orderCollection).pipe(catchError(error => {
+    getOrders(status:OrderStatus|'all'): Observable<string | Order[]> {
+        let queryStatusOrders = query(this.orderCollection);
+        if (status !== 'all'){
+            queryStatusOrders = query(this.orderCollection, where("status", "==", status));
+        }
+        
+        return collectionData(queryStatusOrders).pipe(catchError(error => {
             const firestoreError: FirestoreError = error;
             const errorMessage = getErrorMessage(firestoreError);
             return of(errorMessage)

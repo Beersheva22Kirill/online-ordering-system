@@ -7,7 +7,7 @@ import storeConfig from '../Config/StoreConfig.json'
 type Props = {
     products:Product[],
     totalSum:number,
-    callBackDelItem:(id:any) => void
+    callBackDelItem:(id:any,count:number) => void
 }
 
 const ShopingCardList:React.FC<Props> = (props) => {

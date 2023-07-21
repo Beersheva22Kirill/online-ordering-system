@@ -7,6 +7,6 @@ export interface OrderService {
     addOrder(order:Order):Promise<string|null>
     changeStatus(order:Order,status:OrderStatus):Promise<void>
     closeOrder(order:Order):Promise<void>
-    getOrdersByUser(uid:any):Observable<Order[]|string>;
-    getOrders():Observable<Order[]|string>;
+    getOrdersByUser(uid:any,status:OrderStatus|'all'):Observable<Order[]|string>;
+    getOrders(status:OrderStatus|'all'):Observable<Order[]|string>;
 }

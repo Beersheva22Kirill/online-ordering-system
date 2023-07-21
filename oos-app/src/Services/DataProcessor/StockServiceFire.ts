@@ -1,4 +1,4 @@
-import { doc,getDoc,getFirestore, collection, DocumentReference, CollectionReference, setDoc, FirestoreError, deleteDoc} from "firebase/firestore"
+import { doc,getDoc,getFirestore, collection, DocumentReference, CollectionReference, setDoc, FirestoreError, deleteDoc, where, query} from "firebase/firestore"
 import { Observable, catchError, of } from "rxjs";
 import { oosApp, storage } from "../../Config/firebase-config"
 import { Product } from "../../Model/Product"
@@ -6,6 +6,8 @@ import { getRandomInt } from "../../utils/numbers";
 import { collectionData } from 'rxfire/firestore'
 import { StockService } from "./interfaces/StockService";
 import {StorageReference, ref, uploadBytes, getDownloadURL} from "firebase/storage"
+import { ProductStatus } from "../../Model/ProductStatus";
+import { Category } from "../../Model/Category";
 
 const MIN_ID = 100000;
 const MAX_ID = 1000000;
@@ -90,6 +92,18 @@ export default class StockServiceFire implements StockService{
 
     getProducts(): Observable<string | Product[]> {
         return collectionData(this.stock).pipe(catchError(error => {
+            const firestoreError: FirestoreError = error;
+            const errorMessage = getErrorMessage(firestoreError);
+            return of(errorMessage)
+        })) as Observable<string|Product[]>
+    }
+
+    getProductsByStatus(status:ProductStatus, category?:Category): Observable<string | Product[]> {
+        let queryStatus = query(this.stock, where("status", "==", status));
+        if (category) {
+            queryStatus = query(this.stock, where("status", "==", status),where("category", "==", category));
+        }
+        return collectionData(queryStatus).pipe(catchError(error => {
             const firestoreError: FirestoreError = error;
             const errorMessage = getErrorMessage(firestoreError);
             return of(errorMessage)

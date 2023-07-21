@@ -5,7 +5,7 @@ import { useState } from "react";
 import Confirmation from "./Common/Confirmation";
 
 type Props = {
-    callBackDel:(id:any) => void
+    callBackDel:(id:any, count:number) => void
     product:Product;
 }
 
@@ -22,7 +22,7 @@ const ShopingCardItem:React.FC<Props> = (props) => {
     }
 
     function deleteProduct(){
-        props.callBackDel(props.product.id)
+        props.callBackDel(props.product.id, props.product.count)
     }
 
 

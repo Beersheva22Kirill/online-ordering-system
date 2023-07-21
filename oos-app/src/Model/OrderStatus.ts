@@ -1,1 +1,1 @@
- export type OrderStatus = 'Processing'|'Delivery'|'Closed'
+ export type OrderStatus = 'Processing'|'Delivery'|'Received'|'Closed'

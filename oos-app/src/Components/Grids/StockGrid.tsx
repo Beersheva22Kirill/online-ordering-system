@@ -9,9 +9,12 @@ import ProductCard from "../Forms/ProductCard"
 import Confirmation from "../Common/Confirmation"
 import ModalWindow from "../Common/ModalWindow"
 import storeConfig from "../../Config/StoreConfig.json"
+import { Category } from "../../Model/Category"
 
 type Props = {
     products: Product[],
+    categoryes:Category[];
+    getCategoryById:(id:any) => Promise<Category>
     updProductFunction: (product:Product, id:any) => void
     getProductFunction:(id:any) => Promise<Product>;
     delProductFunction: (id:any) => void;
@@ -29,6 +32,7 @@ const StockGrid:React.FC<Props> = (props) => {
 
     const columns: GridColDef[] = [
         { field: 'id', headerName: 'ID', flex: 0.2, headerClassName: 'data-grid-header', align: 'center', headerAlign: 'center' },
+        { field:'imagePath', headerName:'PICTURE', headerClassName: 'data-grid-header', align: 'center', headerAlign: 'center', renderCell: (params) => <img style={{width:'30px'}} src={params.value} />},
         { field: 'name', headerName: 'NAME', flex: 0.3, headerClassName: 'data-grid-header', align: 'left', headerAlign: 'center'},
         { field: 'category', headerName: 'CATEGORY' ,flex: 0.3, headerClassName: 'data-grid-header', align: 'center', headerAlign: 'center'},
         { field: 'price', headerName: `PRICE(${storeConfig.currencyOfPrice})`, type: 'number' ,flex: 0.2, headerClassName: 'data-grid-header', align: 'center', headerAlign: 'center' },
@@ -68,10 +72,20 @@ const StockGrid:React.FC<Props> = (props) => {
         return props.uploadImageFunction(file)
     }
 
+    function getCategory(id:any){
+        return props.getCategoryById(id)
+    }
+
     async function openEditForm(id:GridRowId) {
         try {
             const product:Product = await props.getProductFunction(id)
-            const form:ReactNode = <ProductCard callBackUploadImg={uploadImage} callBackSubmit={updateProduct} modalClose={setActiveForm} product={product}></ProductCard>
+            const form:ReactNode = <ProductCard
+            callBackGetCategory={getCategory} 
+            callBackUploadImg={uploadImage} 
+            callBackSubmit={updateProduct} 
+            modalClose={setActiveForm} 
+            product={product} 
+            categoryes={props.categoryes}/>
                          
             setEditForm(form);
             setActiveForm(true);
@@ -85,7 +99,10 @@ const StockGrid:React.FC<Props> = (props) => {
                 <Confirmation active = {activeConfirm} callbackAgree={deleteProduct} content={content} question = {title} setActive={setActiveConfirm}></Confirmation>
                 <ModalWindow active = {activeForm} element = {editForm} setActive={setActiveForm}></ModalWindow>
                 <DataGrid 
-                    rows={props.products}
+                    rows={props.products.map(item => {
+                        const cart = {...item,category:item.category.name}
+                        return cart;
+                    })}
                     columns={columns}/>
             </Box>
 }

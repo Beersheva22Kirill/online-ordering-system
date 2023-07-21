@@ -43,16 +43,16 @@ export default class ShoppingCardServiceFire implements ShoppingCard {
     return docSnapShot.data() as ShopingCardType
     }
     
-    async addToCard(idPr: any, uid: any): Promise<void> {
+    async addToCard(idPr: any, count:number, uid: any): Promise<void> {
  
-        const product:ShopingCardProductType = {idProduct:idPr, count:1}
+        const product:ShopingCardProductType = {idProduct:idPr, count:count}
         let currentCard:ShopingCardType = {card:[product]};
         if(await this.exists(uid)){
             let flagAdd:boolean = false;
             currentCard = await this.getCardById(uid)
             currentCard.card.forEach(id => {
                 if(id.idProduct == idPr){
-                    id.count++
+                    id.count += count
                     flagAdd = true
                 }
             })
